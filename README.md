@@ -1,6 +1,8 @@
 # SocialNetworksPenguins
 
 Midterm Update
+
+
 Up until now, the project has been going very well.The project’s direction has steered minutely from saving images, processing, and exporting to capturing the screenshots of webpages, storing them temporarily, then color processing will begin. This decision arose when we realized crawling the Web and saving all images would be infeasible in regards to space. If the images were to be saved then processed, image quality would diminish in order to decrease the total time taken to compute.
 
 
