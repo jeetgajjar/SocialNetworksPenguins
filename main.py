@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 
 from selenium import webdriver
 from PIL import Image
@@ -6,41 +7,38 @@ import csv
 import time
 import numpy as np
 
-
 start_time = time.time()
 driver = webdriver.PhantomJS()
 driver.set_window_size(720, 720)
 imagename = 'line.png'
-
+csv_writer = csv.writer(open('colorGraph.csv', 'wb'))
 
 with open('test.csv', 'rb') as csvfile:
 
     x = 0
     y = 0
     list_pixel = []
+
     for line in csvfile:
         driver.get(line)
         driver.save_screenshot('line.png')
         im = Image.open('line.png').convert('RGB')
 
-        #This block prints all pixels (time should be ~15 seconds/img)
+        #This block prints all pixels (time should be ~15 seconds/img max)
         pixel = im.load()
         for x in xrange(0, 720, 10):
-
             for y in xrange(0, 720, 10):
                 list_pixel = pixel[x, y]
 
                 #prints all 3-tuples, skipping 10 pixels
-                print list(list_pixel)
+
                 array = np.asarray(list_pixel)
-                for i in array:
-                    print i
+                #print np.count_nonzero(array)
+                #csv_writer.writerow(array)
 
+#Create "possible X colors"
 
-                # with open('colorGraph.csv', 'w'):
-                #     csv.writer
-
-                #Need to create adjacency list from 720x720 list
+                #TODO: Need to create adjacency list from 720x720 list
 
 
         # black, white = im.getcolors()
@@ -67,4 +65,3 @@ with open('test.csv', 'rb') as csvfile:
         end_time = time.time()
     final_time = end_time - start_time
     print "Total time:", final_time
-
