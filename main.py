@@ -11,7 +11,7 @@ start_time = time.time()
 driver = webdriver.PhantomJS()
 driver.set_window_size(720, 720)
 imagename = 'line.png'
-csv_writer = csv.writer(open('colorGraph.csv', 'wb'))
+
 
 max_key = 68719476736
 
@@ -68,8 +68,10 @@ with open('test.csv', 'rb') as csvfile:
     list1 = []
     list2 = []
     counter = 0
+    file_counter = 0
 
     for line in csvfile:
+        file_counter += 1
         driver.get(line)
         driver.save_screenshot('line.png')
         im = Image.open('line.png').convert('RGB')
@@ -107,8 +109,10 @@ with open('test.csv', 'rb') as csvfile:
             list1 = []
     print counter
 
-
-    csv_writer.writerow(hash.items())
+    if file_counter % 50 == 0:
+        csv_writer = csv.writer(open(str(file_counter)+'.txt', 'wb'))
+        csv_writer.writerow(hash.items())
+        csv_writer.close()
 
 
 end_time = time.time()
