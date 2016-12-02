@@ -11,7 +11,7 @@ start_time = time.time()
 driver = webdriver.PhantomJS()
 driver.set_window_size(720, 720)
 imagename = 'line.png'
-
+csv_writer = csv.writer(open('colorGraph.csv', 'r+'))
 
 max_key = 68719476736
 
@@ -74,6 +74,7 @@ with open('test.csv', 'rb') as csvfile:
         file_counter += 1
         driver.get(line)
         driver.save_screenshot('line.png')
+
         im = Image.open('line.png').convert('RGB')
 
         # This block prints all pixels (time should be ~15 seconds/img max)
@@ -88,7 +89,7 @@ with open('test.csv', 'rb') as csvfile:
 
                 if cur_x != 0:
                    cur_edge_compression = edge_compression(list1[cur_x], list1[cur_x - 1])
-                   counter +=1
+
 
                    try:
                        hash[cur_edge_compression] += 1
@@ -97,8 +98,6 @@ with open('test.csv', 'rb') as csvfile:
 
                 if cur_y != 0:
                    cur_edge_compression = edge_compression(list1[cur_x], list2[cur_x])
-                   counter +=1
-
 
                    try:
                        hash[cur_edge_compression] += 1
@@ -107,12 +106,10 @@ with open('test.csv', 'rb') as csvfile:
 
             list2 = list(list1)
             list1 = []
-    print counter
 
-    if file_counter % 50 == 0:
-        csv_writer = csv.writer(open(str(file_counter)+'.txt', 'wb'))
-        csv_writer.writerow(hash.items())
-        csv_writer.close()
+    driver.close()
+
+    csv_writer.writerow(hash.items())
 
 
 end_time = time.time()
