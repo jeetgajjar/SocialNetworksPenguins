@@ -31,12 +31,17 @@ with open('test.csv', 'rb') as csvfile:
                 list_pixel = pixel[x, y]
 
                 #prints all 3-tuples, skipping 10 pixels
-
                 array = np.asarray(list_pixel)
-                #print np.count_nonzero(array)
-                #csv_writer.writerow(array)
+                print array
+                # csv_writer.writerow(array)
 
-#Create "possible X colors"
+
+## TODO: Create "possible X colors" boxes, have some method to get similarites of rgb pixels and have Source, Target, Weight
+                # Source = beginning pixel
+                # Target = neighbor pixel
+                # Weight = number of times it appears
+                # For Example- want to see the distribution
+                # Pair-wise function
 
                 #TODO: Need to create adjacency list from 720x720 list
 
