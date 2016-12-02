@@ -13,6 +13,28 @@ driver.set_window_size(720, 720)
 imagename = 'line.png'
 csv_writer = csv.writer(open('colorGraph.csv', 'wb'))
 
+max_key = 68719476736
+
+
+def compress(array):
+
+    red = array[0]
+    green = array[1]
+    blue = array[2]
+    int_rep_count = ((red / 4) * (64 ** 2)) + ((green / 4) * 64) + (blue / 4)
+
+    return int_rep_count
+
+
+def decompress(int_rep_count):
+
+    blue = (int_rep_count % 64) * 4
+    green = ((int_rep_count / 64) % 64) * 4
+    red = (int_rep_count / (64 ** 2)) * 4
+
+    return red, green, blue
+
+
 with open('test.csv', 'rb') as csvfile:
 
     x = 0
@@ -33,10 +55,10 @@ with open('test.csv', 'rb') as csvfile:
                 #prints all 3-tuples, skipping 10 pixels
 
                 array = np.asarray(list_pixel)
-                #print np.count_nonzero(array)
+                compress(array)
                 #csv_writer.writerow(array)
 
-#Create "possible X colors"
+
 
                 #TODO: Need to create adjacency list from 720x720 list
 
