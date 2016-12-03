@@ -49,17 +49,6 @@ def edge_decompression(int_rep_edge):
     return source, target
 
 
-def look_left(list1, cur_x):
-    list1[cur_x -1]
-
-    return list1
-
-
-def look_up(list2, cur_y):
-    list1[cur_y -1]
-
-    return list2
-
 
 with open('test.csv', 'rb') as csvfile:
     x = 0
@@ -70,6 +59,7 @@ with open('test.csv', 'rb') as csvfile:
     counter = 0
 
     for line in csvfile:
+        print line
         driver.get(line)
         driver.save_screenshot('line.png')
         im = Image.open('line.png').convert('RGB')
@@ -108,7 +98,7 @@ with open('test.csv', 'rb') as csvfile:
     print counter
 
 
-    csv_writer.writerow(hash.items())
+    csv_writer.writecol(hash.items())
 
 
 end_time = time.time()
