@@ -62,7 +62,11 @@ class DataProcessor(threading.Thread):
 
                 break
             if str(self.id) + ".png" in working_list:
-                im = Image.open(working_folder + "\\" + str(self.id) + '.png').convert('RGB')
+                try:
+                    im = Image.open(working_folder + "\\" + str(self.id) + '.png').convert('RGB')
+                except IOError:
+                    print "IOERROR " + working_folder + ", " + os.listdir(working_folder)
+                    continue
                 pixel = im.load()
                 list1 = []
                 list2 = []
@@ -112,7 +116,7 @@ class LoadBalancer(threading.Thread):
         image_folder = cwd + "\\image_folder"
         current = int(0)
         while 1:
-            print current
+            #print current
             working_list = os.listdir(working_folder)
             image_cache = os.listdir(image_folder)
             if len(image_cache) == 1 and image_cache[0] == "endendend.txt":
@@ -165,13 +169,14 @@ class DriverThread(threading.Thread):
 
         self.log_file_name = log_dir + "\\" + self.log_file_name
         driver = webdriver.PhantomJS()
-        driver.set_script_timeout(10)
+        driver.set_page_load_timeout(10)
+        driver.implicitly_wait(10)
         driver.set_window_size(720, 720)
         csv = open(self.filename,'r')
         for i, l in enumerate(csv):
             if i < 10000:
                 continue
-            if i > 10007:
+            if i > 10020:
                 break
             for j in range(604800):
                 number_caps_in_folder = len(os.listdir(image_folder))
