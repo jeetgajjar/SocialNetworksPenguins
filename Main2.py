@@ -65,7 +65,7 @@ class DataProcessor(threading.Thread):
                 try:
                     im = Image.open(working_folder + "\\" + str(self.id) + '.png').convert('RGB')
                 except IOError:
-                    print "IOERROR " + working_folder + ", " + os.listdir(working_folder)
+                    print "IOERROR " + working_folder + ", " + str(os.listdir(working_folder))
                     continue
                 pixel = im.load()
                 list1 = []
@@ -83,6 +83,7 @@ class DataProcessor(threading.Thread):
                     list2 = list(list1)
                     list1 = []
                 cur_count += 1
+
                 os.remove(working_folder + "\\" + str(self.id) + '.png')
                 if cur_count > 9:
                     cur_count = 0
@@ -169,14 +170,14 @@ class DriverThread(threading.Thread):
 
         self.log_file_name = log_dir + "\\" + self.log_file_name
         driver = webdriver.PhantomJS()
-        driver.set_page_load_timeout(10)
-        driver.implicitly_wait(10)
+        driver.set_page_load_timeout(15)
+        driver.implicitly_wait(15)
         driver.set_window_size(720, 720)
         csv = open(self.filename,'r')
         for i, l in enumerate(csv):
-            if i < 10000:
+            if i < 11601:
                 continue
-            if i > 10020:
+            if i > 11660:
                 break
             for j in range(604800):
                 number_caps_in_folder = len(os.listdir(image_folder))
