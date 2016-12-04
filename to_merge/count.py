@@ -11,6 +11,7 @@ edge_count =  edge_count * 2
 
 b = (2 * 4) + (4 * 70 * 3) + (70 * 70 * 4)
 
-print b
-print edge_count
-print edge_count / b
+
+print "Total number of edges counted : " + str(edge_count)
+print "Number of edges per website : " + str(b)
+print "Number of websites : " + str(edge_count / b)

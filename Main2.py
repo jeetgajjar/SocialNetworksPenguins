@@ -1,5 +1,7 @@
 #!/usr/bin/env python2
+"""Multi-threaded capture
 
+"""
 from selenium import webdriver
 from PIL import Image
 import time
@@ -41,6 +43,8 @@ class DataProcessor(threading.Thread):
     def __init__(self, id):
         threading.Thread.__init__(self)
         self.id = id
+    def log(self, message):
+        print time.strftime("%c") + " : DATA PROCESSOR THREAD (" + str(self.id) + ") : " + message
     def run(self):
         cwd = os.getcwd()
 
@@ -54,7 +58,7 @@ class DataProcessor(threading.Thread):
         while 1:
             working_list = os.listdir(working_folder)
             if len(working_list) == 1 and working_list[0] == "endendend.txt":
-                print "Writing end to output file " + str(self.id) + "\n"
+                self.log("Writing last file")
                 file_output = open(my_folder + "\\" +time.strftime("%H_%M_%S_") + str(self.id) + "_out.txt","w")
                 for l in a_list:
                     file_output.write(str(l) + "\n")
@@ -65,9 +69,10 @@ class DataProcessor(threading.Thread):
                 try:
                     im = Image.open(working_folder + "\\" + str(self.id) + '.png').convert('RGB')
                 except IOError:
-                    print "IOERROR " + working_folder + ", " + str(os.listdir(working_folder))
+                    self.log("IO Error, " + working_folder + ", " + str(os.listdir(working_folder)))
                     continue
                 pixel = im.load()
+                im.close()
                 list1 = []
                 list2 = []
                 for y in xrange(0, 720, 10):
@@ -87,18 +92,21 @@ class DataProcessor(threading.Thread):
                 os.remove(working_folder + "\\" + str(self.id) + '.png')
                 if cur_count > 9:
                     cur_count = 0
-                    print "Writing 10 to output file " + str(self.id) + "\n"
+                    self.log("Writing intermediate file")
                     file_output = open(my_folder + "\\" +time.strftime("%H_%M_%S_") + str(self.id) + "_out.txt", "w")
                     for l in a_list:
                         file_output.write(str(l) + "\n")
                     file_output.close()
                     a_list = [[]]*(64 ** 3)
+        self.log("Closing")
 
 
 
 class LoadBalancer(threading.Thread):
     def __init__ (self):
         threading.Thread.__init__(self)
+    def log(self, message):
+        print time.strftime("%c") + " : LOAD BALANCER THREAD      : " + message
     def run(self):
         cwd = os.getcwd()
 
@@ -137,6 +145,7 @@ class LoadBalancer(threading.Thread):
             os.remove(image_folder + "\\" + image_cache[0])
             current = (current + 1) % 5
             #print current
+        self.log("Closing")
 
 
 
@@ -147,9 +156,9 @@ class DriverThread(threading.Thread):
         self.filename = filename
         self.log_file_name = time.strftime("%y_%m_%d_%H_%M_%S_log.txt")
     def log(self,message):
-        print time.strftime("%c") + " : DRIVER THREAD : " + message
+        print time.strftime("%c") + " : DRIVER THREAD             : " + message
         try:
-            f = open(self.log_file_name,"w")
+            f = open(self.log_file_name,"a")
             f.write(time.strftime("%c") + " : DRIVER THREAD : " + message + "\n")
             f.close()
         except Exception:
@@ -175,9 +184,9 @@ class DriverThread(threading.Thread):
         driver.set_window_size(720, 720)
         csv = open(self.filename,'r')
         for i, l in enumerate(csv):
-            if i < 11601:
+            if i < 13600:
                 continue
-            if i > 11660:
+            if i > 13700:
                 break
             for j in range(604800):
                 number_caps_in_folder = len(os.listdir(image_folder))
@@ -195,11 +204,12 @@ class DriverThread(threading.Thread):
                         driver.save_screenshot(image_folder + "\\" + str(i) + '_cap.png')
                     except Exception:
                         bad_count += 1
-                        self.log("Unable to read " + str(i) + ", " + site + ", Running total = " + str(bad_count))
+                        self.log("Timeout on #" + str(i) + ", " + site + ", Running number of misses = " + str(bad_count))
                     break
-        driver.close()
+        #driver.close()
         csv.close()
         open(image_folder + "\\endendend.txt","w").close()
+        self.log("Closing")
 
 
 start_time = time.time()
